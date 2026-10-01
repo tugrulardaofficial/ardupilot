@@ -686,10 +686,21 @@ void AP_InertialSensor_Invensensev3::read_fifo()
         // the register read and then another using the same buffer and length which is handled specially
         // for the read
         tfr_buffer[0] = reg_data | BIT_READ_FLAG;
-        // transfer will also be sending data, make sure that data is zero
-        memset(tfr_buffer + 1, 0, n * fifo_sample_size);
-        if (!dev->transfer_fullduplex(tfr_buffer, n * fifo_sample_size + 1)) {
-            goto check_registers;
+
+        if (dev->bus_type() == AP_HAL::Device::BUS_TYPE_I2C) {
+            // I2C full-duplex desteklemez (fiziksel olarak imkansız).
+            // Bunun yerine normal write(register)+read(data) transferi yapıyoruz.
+            // Not: I2C'de READ_FLAG biti gerekmez, register adresi düz gönderilir.
+            const uint8_t reg_addr = reg_data; // BIT_READ_FLAG OLMADAN
+            if (!dev->transfer(&reg_addr, 1, tfr_buffer + 1, n * fifo_sample_size)) {
+                goto check_registers;
+            }
+        } else {
+            // SPI: mevcut full-duplex yol
+            memset(tfr_buffer + 1, 0, n * fifo_sample_size);
+            if (!dev->transfer_fullduplex(tfr_buffer, n * fifo_sample_size + 1)) {
+                goto check_registers;
+            }
         }
         samples = tfr_buffer + 1;
 

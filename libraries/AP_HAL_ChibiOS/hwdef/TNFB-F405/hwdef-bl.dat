@@ -1,0 +1,33 @@
+# hw definition file for the bootloader of the custom STM32F405RGT6 board
+#
+# Kural: FLASH_BOOTLOADER_LOAD_KB burada, ana hwdef.dattaki
+# FLASH_RESERVE_START_KB (32) ile AYNI olmalıdır.
+
+# MCU class and specific type
+MCU STM32F4xx STM32F405xx
+
+# board ID. Bkz. Tools/AP_Bootloader/board_types.txt (ana hwdef.dat ile aynı olmalı)
+APJ_BOARD_ID AP_HW_TNFB_F405
+
+# crystal frequency
+OSCILLATOR_HZ 24000000
+
+FLASH_SIZE_KB 1024
+
+# bootloader flashın en başına yazılır
+FLASH_RESERVE_START_KB 0
+
+# ana firmwarein yükleneceği offset (ana hwdef.dat FLASH_RESERVE_START_KB ile eşleşmeli)
+FLASH_BOOTLOADER_LOAD_KB 48
+
+# bootloader sadece USB üzerinden çalışır (isterseniz bir UART ekleyebilirsiniz)
+SERIAL_ORDER OTG1
+
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# buzzerın bootloaderda çığlık atmasını önlemek için LOWda tutulur
+PA8 BUZZER OUTPUT LOW PULLDOWN

@@ -717,6 +717,8 @@ AP_HW_AET-U7_ODID                   12510
 AP_HW_AET-AT405A_ODID               12511
 AP_HW_AET-405-Mini_ODID             12512
 
+AP_HW_TNFB_F405                     13000
+
 
 # do not allocate board IDs above 10,000 for non-ODID boards.
 # do not allocate board IDs above 19,999 in this file.

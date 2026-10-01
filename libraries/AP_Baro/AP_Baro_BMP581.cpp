@@ -103,6 +103,17 @@ bool AP_Baro_BMP581::init()
         return false;
     }
 
+    // soft reset, sonra NVM'in yuklenmesi icin kisa bekleme
+    // (bazi BMP581 birimlerinde soft-reset olmadan nvm_rdy
+    //  guvenilir sekilde 1 olmuyor - Bosch datasheet BST-BMP581-DS004)
+    _dev->write_register(BMP581_REG_CMD, 0xB6);
+    hal.scheduler->delay(5);
+
+    // reset sonrasi CHIP_ID'i tekrar dogrula
+    if (!_dev->read_registers(BMP581_REG_CHIP_ID, &whoami, 1) || whoami != BMP581_ID) {
+        return false;
+    }
+
     uint8_t status;
     if (!_dev->read_registers(BMP581_REG_STATUS, &status, 1)) {
         return false;
