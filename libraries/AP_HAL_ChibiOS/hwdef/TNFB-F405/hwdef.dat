@@ -110,13 +110,15 @@ define HAL_OS_FATFS_IO 1
 
 PC0 BATT_VOLTAGE_SENS ADC1 SCALE(1)
 PC1 BATT_CURRENT_SENS ADC1 SCALE(1)
-PC2 VDD_5V_SENS        ADC1 SCALE(2)
+PC2 VDD_5V_SENS        ADC1 SCALE(1.545)
 
 # PC0 = ADC1_IN10, PC1 = ADC1_IN11, PC2 = ADC1_IN12
 define HAL_BATT_VOLT_PIN 10
 define HAL_BATT_CURR_PIN 11
 
+# Voltaj bolucu: R47=100k (ust) + R48=10k (alt) -> (100000+10000)/10000 = 11.0
 define HAL_BATT_VOLT_SCALE 11.0
+# Akim: ESC akim ciktisinin V/A hassasiyeti dogrulanana kadar yer tutucu
 define HAL_BATT_CURR_SCALE 17.0
 
 #################################################
@@ -143,6 +145,9 @@ PA8 TIM1_CH1 TIM1 ALARM
 PA4 LED0 OUTPUT LOW GPIO(90)
 PC4 LED1 OUTPUT LOW GPIO(91)
 
+# iki LED'li (2-LED) pano duzeni - A/B LED bildirim mantigini etkinlestir
+define AP_NOTIFY_GPIO_LED_2_ENABLED 1
+
 # ArduPilot durum (bildirim) LED'leri ile eşleştiriyoruz
 define HAL_GPIO_A_LED_PIN 90
 define HAL_GPIO_B_LED_PIN 91
@@ -159,11 +164,14 @@ define HAL_GPIO_LED_ON 1
 IMU Invensensev3 I2C:0:0x69 ROTATION_ROLL_180_YAW_270
 define HAL_DEFAULT_INS_FAST_SAMPLE 1
 
-# BARO: BMP581 (I2C1 üzerinde, adres 0x47)
-BARO BMP581 I2C:0:0x47
+# BARO: BMP581 (I2C1 üzerinde, adres 0x46)
+BARO BMP581 I2C:0:0x46
 
-# COMPASS: MMC5983MA (I2C1 üzerinde, adres 0x30)
-COMPASS MMC5XX3 I2C:0:0x30 false ROTATION_NONE
+# COMPASS: MMC5983MA (I2C1 üzerinde, adres 0x30, dahili)
+COMPASS MMC5XX3 I2C:0:0x30 false ROTATION_YAW_45
+
+# COMPASS: TBS M10Q GPS modülündeki QMC5883P (aynı I2C1 hattında, harici)
+COMPASS QMC5883P I2C:0:0x2C true ROTATION_NONE
 
 define AP_COMPASS_PROBING_ENABLED 1
 define ALLOW_ARM_NO_COMPASS

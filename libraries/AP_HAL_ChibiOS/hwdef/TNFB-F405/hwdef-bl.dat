@@ -31,3 +31,8 @@ PA14 JTCK-SWCLK SWD
 
 # buzzerın bootloaderda çığlık atmasını önlemek için LOWda tutulur
 PA8 BUZZER OUTPUT LOW PULLDOWN
+
+# Kullanıcı LED'leri (ana hwdef.dat ile aynı pinler, PA4=yeşil, PC4=mavi)
+PA4 LED_BOOTLOADER OUTPUT LOW
+PC4 LED_ACTIVITY OUTPUT LOW
+define HAL_LED_ON 1
